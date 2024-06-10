@@ -1,6 +1,7 @@
 import configparser
 import os
 import re
+import ollama
 import subprocess
 from datetime import datetime
 
@@ -70,11 +71,14 @@ def main():
 
     print(prompt)
     print('Creating the daily horoscope for you. Please wait ...')
-    result = subprocess.run(command_parameters,
-                            input=prompt.encode('utf-8').decode('cp1252'),
-                            capture_output=True,
-                            text=True)
-    print(result.stdout.encode('cp1252').decode('utf-8'))
+
+    response = ollama.chat(model='llama3', messages=[
+        {
+            'role': 'user',
+            'content': prompt,
+        },
+    ])
+    print(response['message']['content'])
 
 
 def set_config_value(config, user_data_section_name, user_data_item):
